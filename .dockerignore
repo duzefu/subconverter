@@ -1,0 +1,27 @@
+# Git
+.git
+.gitignore
+.gitmodules
+
+# Build artifacts
+build/
+*.o
+*.a
+*.so
+*.exe
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation
+README*.md
+LICENSE
+
+# GitHub
+.github/
+
+# Scripts (keep only what's needed)
+scripts/*.sh
