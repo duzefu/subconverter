@@ -36,8 +36,9 @@ RUN set -xe && \
     cmake -DCMAKE_CXX_STANDARD=11 . && \
     make install -j $THREADS
 
-# Copy local source code instead of cloning
-COPY . /subconverter
+# Copy local source code and ACL4SSR submodule
+COPY subconverter /subconverter
+COPY ACL4SSR /ACL4SSR
 WORKDIR /subconverter
 
 # Build subconverter
@@ -56,6 +57,7 @@ RUN apk add --no-cache --virtual subconverter-deps pcre2 libcurl yaml-cpp
 
 COPY --from=builder /subconverter/subconverter /usr/bin/
 COPY --from=builder /subconverter/base /base/
+COPY --from=builder /ACL4SSR /base/ACL4SSR/
 
 ENV TZ=Asia/Shanghai
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && \

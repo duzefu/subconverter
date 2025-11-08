@@ -62,15 +62,25 @@ def main():
 
         logging.info(f"reading files from url {url}, matches {matches}, save to {save_path} keep_tree {keep_tree}")
 
-        repo_path = os.path.join("./tmp/repo/", repo)
+        # Check for local submodule first (relative to project root)
+        local_submodule_path = os.path.join("../../", repo)
+        local_repo = open_repo(local_submodule_path)
 
-        r = open_repo(repo_path)
-        if r is None:
-            logging.info(f"cloning repo {url} to {repo_path}")
-            r = Repo.clone_from(url, repo_path)
+        if local_repo is not None:
+            logging.info(f"using local submodule at {local_submodule_path}")
+            repo_path = local_submodule_path
+            r = local_repo
         else:
-            logging.info(f"repo {repo_path} exists")
-            
+            # Fallback to cloning from GitHub
+            logging.info(f"local submodule not found at {local_submodule_path}, using remote clone")
+            repo_path = os.path.join("./tmp/repo/", repo)
+            r = open_repo(repo_path)
+            if r is None:
+                logging.info(f"cloning repo {url} to {repo_path}")
+                r = Repo.clone_from(url, repo_path)
+            else:
+                logging.info(f"repo {repo_path} exists")
+
         try:
             if commit is not None:
                 logging.info(f"checking out to commit {commit}")
