@@ -11,6 +11,30 @@ dns:
   enable: true
   listen: :1053
 {% endif %}
+{% if default(request.clash.doh, "") == "true" %}
+dns:
+  enable: true
+  ipv6: false
+  listen: :1053
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.0/16
+  fake-ip-filter:
+    - '*.lan'
+    - 'localhost.ptlogin2.qq.com'
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+    - https://doh.360.cn/dns-query
+  fallback:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+    - https://dns.google/dns-query
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+      - 240.0.0.0/4
+{% endif %}
 {% if local.clash.new_field_name == "true" %}
 proxies: ~
 proxy-groups: ~
